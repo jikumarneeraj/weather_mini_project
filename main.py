@@ -4,9 +4,9 @@ import requests
 import speech_recognition as s
 import win32com.client
 from dotenv import load_dotenv
-
+# loading the data from env file
 load_dotenv()
-
+# geting the api key from env file for the privacy purposa
 api_key = os.getenv("API_KEY")
 
 #start the app
@@ -59,7 +59,8 @@ if __name__=='__main__':
                     speaker.Speak("Sorry, I couldn't understand your query. Please try again.")
                     continue
 
-            #matching the condition given by user with api data
+            #matching the condition given by user 
+            # featching the data from api
             if topic=='wind speed in meter per hours':
                 windSpeedInMPH=f'Wind speed in {city} is {dic["current"]["wind_mph"]} meters per hour.'
                 speaker.Speak(windSpeedInMPH)
@@ -112,6 +113,7 @@ if __name__=='__main__':
                 speaker.Speak(uv)
             else:
                 speaker.Speak('I did not understand what you said. Please try again.')
+        # if city name not match according to the user
         elif confirm=='no':
             speaker.Speak('Please tell your city name with the state and country.')
 
