@@ -13,14 +13,15 @@ api_key = os.getenv("API_KEY")
 if __name__=='__main__':
     speaker = win32com.client.Dispatch("SAPI.SpVoice")
     voices = speaker.GetVoices()
-    speaker.Voice = voices.Item(2)
+    speaker.Voice = voices.Item(0)
     speaker.Speak('i am listening you.......')
     #for always run i use while True
     while True:
-        speaker.Speak('Tell your city name: ')
+        speaker.Speak('Tell your city name and for exit say exit ')
         sr=s.Recognizer()
         with s.Microphone() as m:
             audio=sr.listen(m)
+            sr.adjust_for_ambient_noise(m)
             try:
                 city=sr.recognize_google(audio,language='eng-in')
             except s.UnknownValueError:
@@ -42,6 +43,7 @@ if __name__=='__main__':
         try:
             with s.Microphone() as m:
               confirm_audio=sr.listen(m)
+              sr.adjust_for_ambient_noise(m)
               confirm=sr.recognize_google(confirm_audio,language='eng-in').lower()
         except s.UnknownValueError:
             speaker.Speak("Sorry, I couldn't understand. Please try again.")
@@ -54,6 +56,7 @@ if __name__=='__main__':
 
                 try:
                     topic_audio=sr.listen(m)
+                    sr.adjust_for_ambient_noise(m)
                     topic=sr.recognize_google(topic_audio,language='eng-in').lower()
                 except s.UnknownValueError:
                     speaker.Speak("Sorry, I couldn't understand your query. Please try again.")
@@ -61,7 +64,7 @@ if __name__=='__main__':
 
             #matching the condition given by user 
             # featching the data from api
-            if topic=='wind speed in meter per hours':
+            if any(keyword in topic for keyword in ["wind speed in meter per hours", "velocity"]):
                 windSpeedInMPH=f'Wind speed in {city} is {dic["current"]["wind_mph"]} meters per hour.'
                 speaker.Speak(windSpeedInMPH)
             elif topic=='wind speed':
@@ -118,4 +121,4 @@ if __name__=='__main__':
             speaker.Speak('Please tell your city name with the state and country.')
 
         #if we want to again run the 
-        speaker.Speak('If you want to exit, say "exit". Otherwise')
+        # speaker.Speak('If you want to exit, say "exit". Otherwise')
